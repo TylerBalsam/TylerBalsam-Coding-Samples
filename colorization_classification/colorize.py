@@ -25,6 +25,7 @@ Z = test_data['ycbcr_imgs']
 # tf.squeeze use throughout. Small BATCH_NUMs are generally not
 # recommended, however.)
 BATCH_NUM = 20
+VAL_SET_SIZE = 80
 LEARNING_RATE = .001
 EPOCH_NUM = 2
 FILTERS = 8
@@ -32,7 +33,7 @@ FILTERS = 8
 # Forward pass without training. Should be equal to test dataset
 # size.
 if not ("train" in sys.argv[1:]):
-	BATCH_NUM = 80
+	BATCH_NUM = VAL_SET_SIZE
 
 # Network layer reference vars
 BRIDGE_STACK = []
@@ -71,6 +72,7 @@ for i in range(CENTER_BLOCK_NUM):
     network = conv_2d(network, FILTERS, 3, activation='elu')
     network = batch_normalization(network)
 
+FILTERS = FILTERS/2
 # Decoder to second bottleneck
 for i in range(LAYER_BLOCK_NUM):
     # Divides depth by 4 by expanding 1 x 1 x 4 blocks into
@@ -143,11 +145,12 @@ if "train" in sys.argv[1:]:
 
 # At the end of training, or in normal run, predict
 # and save the resulting colorized images.
-out = np.array(model.predict(Z))
-out = out*255
-out = out.astype(np.uint8)
-out = np.split(out, out.shape[0])
-i = 0
-for val in out:
-	scipy.misc.toimage(np.squeeze(val), cmin=0, cmax=255).save('results/colorized'+str(i)+'.png')
-	i += 1
+if (BATCH_NUM == VAL_SET_SIZE):
+	out = np.array(model.predict(Z))
+	out = out*255
+	out = out.astype(np.uint8)
+	out = np.split(out, out.shape[0])
+	i = 0
+	for val in out:
+		scipy.misc.toimage(np.squeeze(val), cmin=0, cmax=255).save('results/colorized'+str(i)+'.png')
+		i += 1
