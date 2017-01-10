@@ -12,16 +12,16 @@ This repository currently contains 3 projects:
 
 Here's a brief overview of each project:
 
-##1. Classification Colorization:
+## 1. Classification Colorization:
 
-   ###NOTE: This folder contains the core pieces of the code from this project, as a demonstration only.
+   ### NOTE: This folder contains the core pieces of the code from this project, as a demonstration only.
 
    This network is a dual bottlenecked classification network to colorize photos. The first part of the network is a typical autoencoder structure, and all of the outputs of the encoder layers are bridged to the equivalent decoder layer to help offload the flow of lower level details from the bottleneck. The secondary bottleneck is to reduce computation load and smooth the predicted classification distribution. The output layer depth is squeezed to the original layer depth (default is 8), then expanded to a quarter, then half, then full depth classification depth. The minimal bin size I found in practice to produce realistically colored images was 25 per dimension, which results in an output depth of 50 total for both Cb and Cr.
 
    The YCbCr colorspace is used for its simplicity. Loss is a combination of neg-ln and a total variance loss. One interesting fact to note is that due to the classification output, the total variance loss is applied to the confidence levels of the network, and in practice this effectively smoothed output colors well. It additionally functioned as a regularization method. Output confidences were split to their respective Cb and Cr counterparts, and softmaxed across the depth of each split at each pixel. These confidences are then squared -- in theory this gives extra precedence to rarer colors in the dataset, and in practice I've found it converges to more visually pleasing results more quickly.
 
 
-   ##Problems for consideration
+   ## Problems for consideration
    
    1. Currently, the value drawn from the forward pass of the colorization network is the value with the maximum confidence. This is because without some sort of object segmentation, colors drawn for a particular object from the predicted binned distribution would be speckled all over the map. Possible solutions include training a segmentation network on top of a pretrained version of this network and pulling a draw from the distribution similar across each segmented area. Due to the lower need for color resolution in the YCbCr colorspace, this would be a fairly fault tolerant. However, adapting a segmentation network to inputs of 224x224x25x2 could be extremely difficult/memory intensive.
 
@@ -29,7 +29,7 @@ Here's a brief overview of each project:
 
 	
 
-##2. Binary Classification Colorization:
+## 2. Binary Classification Colorization:
 
    ##NOTE: This folder the core pieces of the code from this project, as a demonstration only. 
 
@@ -40,12 +40,6 @@ Here's a brief overview of each project:
    It works surprisingly well, and one adjustment I had made that caused issues was attempting to weight the digits by their influence. This was effectively [32, 16, 8, 4, 2, 1] for a six digit binary output. However, disabling this caused the network to go from slow partial convergence on the sanity test to relatively quick convergence on the sanity test. While it does not converge quite as quickly as the normal classification network, which does not converge as quickly as a network with a Euclidean Loss, it has absolutely exceeded any expectations I could have had for it. I am currently working on optimizing it for convergence on a smaller test set, and initial results look promising. For the sanity test and the confidence map, see the relevant folder under colorization_binary. One thing to note is that the confidence map for this network on the sanity test, compared to the classification network, is more speckled. From my past experience, lowering speckling will be a combination of adjusting the total variance loss constant, the learning rate, and increasing the epoch number. Running post-processing is also an option as well.
 
 
-   Potential convergence issue: Even with weight rebalancing, if the first node is incorrect, if the sub-node is correct then it will go further from the answer. So the question would be whether rebalancing the loss traversal to emphasize nodes with a lesser physical distance (like a euclidian loss for binary tree point distances), or whether a weighed independant weighted xentropy of the predicted/true digits is better. I could see the xentropy version fluctuating wildly for the first digit at first, then settling on lower digits as the network neared convergence. Proof is far away for that. PERHAPS, perhaps, the loss could ignore all lower nodes after the first incorrect digit? This could dampen a lot of the flip flopping noise, keep the high loss at high values, and allow more safely for that "settling" action. Binary Tree at: http://archive.cnx.org/contents/cffc6b16-b811-4c86-a4fd-ca7eae17735d@7/binary-codes-from-symbols-to-binary-codes
+## 3. Floating Point Division:
 
-   Description here.
-
-##3. Floating Point Division:
-
-   This was for a class project in the fall of 2015, and is a more vanilla demonstration of my coding ability. It is a relatively simple, lower level program to do floating point division on an input file of two floating point integers in hex, one pair separated by a space per line.
-
-   Further description here.
+   This was for a class project in the fall of 2015, and is a more vanilla demonstration of my coding ability. It is a relatively simple, lower level program to do floating point division on an input file of two floating point integers in hex, each pair separated by a space, one per line.
