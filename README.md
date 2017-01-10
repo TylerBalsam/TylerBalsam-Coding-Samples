@@ -18,6 +18,15 @@ Here's a brief overview of each project:
 
    The YCbCr colorspace is used for its simplicity. Loss is a combination of neg-ln and a total variance loss. One interesting fact to note is that due to the classification output, the total variance loss is applied to the confidence levels of the network, and in practice this effectively smoothed output colors well. It additionally functioned as a regularization method. Output confidences were split to their respective Cb and Cr counterparts, and softmaxed across the depth of each split at each pixel.
 
+### Cool tricks I used:
+   
+   1. Confidence smoothing (Include logic) This one comes first as it is a personal favorite of mine, and came up with this as a solution to smoothing issues for the classification network.
+
+   2. Chroma Subsampling
+
+   3. B&W bridging
+
+   4. And more!
 
 ### Problems for consideration
    
@@ -35,7 +44,7 @@ Here's a brief overview of each project:
 
    A negative log likelihood loss is applied to the bins (softmaxed along the pair of 1 and 0 bins) during training time, and during the forward pass the bin with the highest confidence (i.e. > .5) is selected, then the binary digit at each point is converted to a color integer, which represents the Cb or Cr bin, respectively. Then that bin is converted to the lowest value in the bin, and stacked on the original BW image and saved to a .png file.
 
-   It works surprisingly well, now that I have been able to work with it some. One adjustment I had previously made that caused issues was attempting to weight the digits' loss by their "influence" on the resultant base 10 number. This was effectively [32, 16, 8, 4, 2, 1] for a six digit binary output. However, disabling this caused the network to go from slow partial convergence on the sanity test to relatively quick convergence on the sanity test. While it does not converge quite as quickly as the normal classification network, which does not converge as quickly as a network with a Euclidean Loss, it has absolutely exceeded any expectations I could have had for it. I am currently working on optimizing it for convergence on a smaller test set, and initial results look promising. For the sanity test and the confidence map, see the relevant folder under colorization_binary. One thing to note is that the confidence map for this network on the sanity test, compared to the classification network, is more speckled. From my past experience, lowering speckling will be a combination of adjusting the total variance loss constant, the learning rate, and increasing the epoch numbers during training time. Running post-processing is also an option as well.
+   While it does not converge quite as quickly as the normal classification network, which does not converge as quickly as a network with a Euclidean Loss, it has absolutely exceeded any expectations I could have had for it. I am currently working on optimizing it for convergence on a smaller test set, and initial results look promising. For the sanity test and the confidence map, see the relevant folder under colorization_binary. One thing to note is that the confidence map for this network on the sanity test, compared to the classification network, is more speckled. From my past experience, lowering speckling will be a combination of adjusting the total variance loss constant, the learning rate, and increasing the epoch numbers during training time. Running post-processing is also an option as well.
 
 
 ## 3. Floating Point Division:
