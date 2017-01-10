@@ -101,7 +101,6 @@ network = batch_normalization(network)
 
 if "train" in sys.argv[1:]:
 	network = tf.nn.softmax(tf.reshape(network, [-1, BIN_SIZE]))
-	network = tf.pow(network, 2)
 	network = tf.reshape(network, [BATCH_NUM, 224, 224, 2, BIN_SIZE])
 
 	# Boolean mask to select confidence values at the correct

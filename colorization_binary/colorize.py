@@ -93,7 +93,6 @@ for i in range(3):
 
 if "train" in sys.argv[1:]:
 	network = tf.nn.softmax(tf.reshape(network, [-1, BINARY_GRANULARITY]))
-	network = tf.pow(network, 2)
 	network = tf.reshape(network, [BATCH_NUM, 224, 224, 2, BINARY_GRANULARITY, 2])
 
 	# Boolean mask to select confidence values at the correct
