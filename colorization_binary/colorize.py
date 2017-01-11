@@ -24,15 +24,16 @@ Z = test_data['ycbcr_imgs']
 # Hyperparams (Note: BATCH_NUM of 1 can cause issues because of
 # tf.squeeze use throughout. Small BATCH_NUMs are generally not
 # recommended, however.)
-BATCH_NUM = 2
+BATCH_NUM = 20
 LEARNING_RATE = .005
+VAL_SET_SIZE = 80
 EPOCH_NUM = 1
 FILTERS = 8
 
 # Forward pass without training. Should be equal to test dataset
 # size.
 if not ("train" in sys.argv[1:]):
-	BATCH_NUM = 2
+	BATCH_NUM = VAL_SET_SIZE
 
 # Network layer reference vars
 BRIDGE_STACK = []
@@ -73,6 +74,7 @@ for i in range(CENTER_BLOCK_NUM):
     network = batch_normalization(network)
 
 FILTERS = FILTERS/2
+
 # Decoder to second bottleneck
 for i in range(LAYER_BLOCK_NUM):
     # Divides depth by 4 by expanding 1 x 1 x 4 blocks into
@@ -110,8 +112,6 @@ if "train" in sys.argv[1:]:
 	# Log of loss function performed on this side since binary weights can't
 	# piggyback into main loss function atm.
         network = -tf.log(network+1e-8)
-        binary_conversion_weights = [1, 1, 1, 1, 1, 1]#[16, 8, 4, 2, 1, 1]
-        network = network * binary_conversion_weights
         network = tf.reduce_mean(network, 4)
 	network = tf.concat(3, [bw, network])
 else:
@@ -152,7 +152,6 @@ if "train" in sys.argv[1:]:
 # At the end of training, or in normal run, predict
 # and save the resulting colorized images.
 out = np.array(model.predict(Z))
-print(out)
 out = out*255
 out = out.astype(np.uint8)
 out = np.split(out, out.shape[0])

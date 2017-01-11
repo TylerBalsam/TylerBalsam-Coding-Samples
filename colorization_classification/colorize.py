@@ -73,6 +73,7 @@ for i in range(CENTER_BLOCK_NUM):
     network = batch_normalization(network)
 
 FILTERS = FILTERS/2
+
 # Decoder to second bottleneck
 for i in range(LAYER_BLOCK_NUM):
     # Divides depth by 4 by expanding 1 x 1 x 4 blocks into
