@@ -10,7 +10,7 @@ This repository currently contains 3 projects:
 
 3. A C++ project for a previous programming class, implementing a version of the lower level floating point division operations.
 
-Here's a brief overview of each project:
+Here's a overview of each project:
 
 ## 1. Classification Colorization:
 
