@@ -143,3 +143,23 @@ def yuv2rgbnp(im):
 
   rgb = dot(yuv, A.T)
   return rgb.clip(0, 255).astype('uint8')
+
+def float_to_int_to_binary(in_value, length):
+  in_value = tf.to_int32(in_value)
+  result_digit_stack = []
+  # Must be explicit unless we use tf loop conditions
+  for x in range (0, length):
+        result_digit_stack.append(in_value % 2)#insert(0, in_value % 2)
+        in_value = in_value / 2
+  out_value = tf.pack(result_digit_stack, axis=4)
+  print(out_value, out_value)
+  return tf.to_int32(out_value)
+
+def binary_to_int(in_value, length):
+  # Hardcoded to 6 since this network is a POC. If I can make this
+  # converge consistently, will be made exensible.
+  assert length == 6;
+
+  out_value = tf.reduce_sum(in_value * [1, 2, 4, 8, 16, 32], 4)                         
+  return out_value
+
