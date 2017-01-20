@@ -46,7 +46,7 @@ The two neural network projects are the result of my past year of work in this a
 
 As it stands, it's a network I'm proud of. I personally believe that it has a lot of future potential.
 
-If you have any questions about this network, or the first network, feel free to drop me a line at my personal email, tbcharger@gmail.com.
+If you have any questions about this network, or the first network, feel free to drop me a line at my personal email, [tbcharger \*at\* gmail.com](mailto:tbcharger@gmail.com).
 
 ## 3. Floating Point Division:
 
